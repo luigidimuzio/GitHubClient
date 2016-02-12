@@ -34,3 +34,5 @@ struct GitHubRepository {
         stars = aStarAmount
     }
 }
+
+typealias GitHubRepositories = [GitHubRepository]

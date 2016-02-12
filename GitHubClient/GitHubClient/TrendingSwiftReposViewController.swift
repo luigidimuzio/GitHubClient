@@ -21,14 +21,20 @@ class TrendingSwiftReposViewController: UIViewController, UITableViewDataSource 
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: repoCellReuseIdentifier)
+        fetchReposAndReloadView()
     }
     
-    override func viewWillAppear(animated: Bool) {
-        githubService.fetchSwiftTrendingRepositories { (fetchedRepos) -> Void in
-            self.trendingRepos = fetchedRepos
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                self.tableView.reloadData()
-            })
+    func fetchReposAndReloadView() {
+        githubService.fetchSwiftTrendingRepositories { result in
+            switch(result) {
+            case .Success(let fetchedRepos):
+                self.trendingRepos = fetchedRepos
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    self.tableView.reloadData()
+                })
+            case .Failure:
+                print("Error")
+            }
         }
     }
 

@@ -8,32 +8,48 @@
 
 import Foundation
 
+public enum ServiceError {
+    case InvalidJSON
+    case InvalidData
+}
+
+public enum ServiceResult<T> {
+    case Success(T)
+    case Failure(ServiceError)
+}
+
 class GitHubService {
     
-    let baseUrl = "https://api.github.com/search/repositories"
+    let baseUrl = "https://api.github.com/"
+    let repositoriesUrl = "search/repositories"
+    
     let session = NSURLSession.sharedSession()
     
-    func fetchSwiftTrendingRepositories(completion: [GitHubRepository] -> Void) {
+    func fetchSwiftTrendingRepositories(completion: (ServiceResult<GitHubRepositories>) -> Void) {
 
-        let url = NSURL(string: baseUrl+"?q=language:swift&sort=stars&order=desc")!
+        let url = NSURL(string: baseUrl+repositoriesUrl+"?q=language:swift&sort=stars&order=desc")!
         let request = NSURLRequest(URL: url)
         
         session.dataTaskWithRequest(request) {
             (data, response, error) -> Void in
             
-            guard let data = data else { return }
+            guard let data = data else {
+                completion(.Failure(.InvalidData))
+                return
+            }
+            
             do {
                 if let json = try NSJSONSerialization.JSONObjectWithData(data, options: []) as? NSDictionary,
                     let jsonRepos = json["items"] as? [NSDictionary] {
                         let repositories:[GitHubRepository] = jsonRepos.flatMap{ GitHubRepository(dictionary: $0)}
-                        completion(repositories)
+                        completion(.Success(repositories))
                 } else {
-                    completion([])
+                    completion(.Failure(.InvalidJSON))
                 }
             }
             catch {
                 print("error")
-                completion([])
+                completion(.Failure(.InvalidJSON))
             }
         
         }.resume()
