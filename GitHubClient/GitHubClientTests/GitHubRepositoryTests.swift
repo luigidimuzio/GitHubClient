@@ -11,17 +11,51 @@ import XCTest
 
 class GitHubRepositoryTests: XCTestCase {
     
-    func testThatItCanBeInitializedWithValidDictionary() {
-        
-        let aValidRepoDictionary = [
-            "name": "GithubClient",
+    var aValidRepoDictionary: [String: AnyObject] = Dictionary()
+    
+    override func setUp() {
+        aValidRepoDictionary = [
+            "name": "GitHubClient",
             "description": "A cool GitHubClient",
             "language": "Swift",
             "stargazers_count": 2,
             "url": "https://github.com/luigidimuzio/GitHubClient"
         ]
+    }
+    
+    func testThatItCanBeInitializedWithValidDictionary() {
         let testRepo = GitHubRepository(dictionary: aValidRepoDictionary)
         XCTAssertNotNil(testRepo)
+    }
+    
+    func testThatItHasANameWhenInitializedWithValidDictionary() {
+        let testRepo = GitHubRepository(dictionary: aValidRepoDictionary)
+        XCTAssertNotNil(testRepo)
+        XCTAssertEqual(testRepo!.name, "GitHubClient")
+    }
+    
+    func testThatItHasADescriptionWhenInitializedWithValidDictionary() {
+        let testRepo = GitHubRepository(dictionary: aValidRepoDictionary)
+        XCTAssertNotNil(testRepo)
+        XCTAssertEqual(testRepo!.description, "A cool GitHubClient")
+    }
+    
+    func testThatItHasALanguageWhenInitializedWithValidDictionary() {
+        let testRepo = GitHubRepository(dictionary: aValidRepoDictionary)
+        XCTAssertNotNil(testRepo)
+        XCTAssertEqual(testRepo!.language, "Swift")
+    }
+    
+    func testThatItHasAStarNumberWhenInitializedWithValidDictionary() {
+        let testRepo = GitHubRepository(dictionary: aValidRepoDictionary)
+        XCTAssertNotNil(testRepo)
+        XCTAssertEqual(testRepo!.stars, 2)
+    }
+    
+    func testThatItHasAnURLWhenInitializedWithValidDictionary() {
+        let testRepo = GitHubRepository(dictionary: aValidRepoDictionary)
+        XCTAssertNotNil(testRepo)
+        XCTAssertEqual(testRepo!.url, NSURL(string: "https://github.com/luigidimuzio/GitHubClient")!)
     }
     
     func testThatItCantBeInitializedWithDictionaryThatIsMissingRepoName() {
